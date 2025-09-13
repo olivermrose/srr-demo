@@ -3,48 +3,60 @@
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { authClient } from "@/lib/auth-client";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import { ChevronRight } from "lucide-react";
 
 export default function Header() {
 	const { data } = authClient.useSession();
 
 	return (
-		<header className="fixed inset-x-0 border-b border-border bg-card">
+		<header className="border-b border-border bg-card">
 			<div className="container mx-auto px-4 py-4">
 				<div className="flex items-center justify-between">
-					<div className="flex items-center space-x-2">
-						<div className="h-8 w-8 rounded-md bg-primary flex items-center justify-center">
+					<a className="flex items-center gap-x-2" href="/">
+						<div className="size-8 rounded-md bg-primary flex items-center justify-center">
 							<span className="text-primary-foreground font-bold text-sm">SR</span>
 						</div>
 
 						<h1 className="text-xl font-semibold text-foreground">StudyRoom</h1>
-					</div>
+					</a>
 
-					<nav className="flex items-center space-x-4">
-						{data?.user && (
-							<Link href="/reservations">
-								<Button variant="ghost" size="sm">
-									My Reservations
-								</Button>
-							</Link>
-						)}
+					{data?.user ? (
+						<DropdownMenu>
+							<DropdownMenuTrigger className="flex group items-center">
+								<span className="text-sm font-medium">{data.user.name}</span>
+								<ChevronRight className="ml-1 size-4 group-data-[state=open]:rotate-90 transition-[rotate]" />
+							</DropdownMenuTrigger>
 
-						<Button variant="ghost" size="sm">
-							Help
+							<DropdownMenuContent>
+								<DropdownMenuLabel>{data.user.email}</DropdownMenuLabel>
+
+								<DropdownMenuItem>
+									<Link href="/reservations">My Reservations</Link>
+								</DropdownMenuItem>
+
+								<DropdownMenuSeparator />
+
+								<DropdownMenuItem onClick={() => authClient.signOut()}>
+									Sign Out
+								</DropdownMenuItem>
+							</DropdownMenuContent>
+						</DropdownMenu>
+					) : (
+						<Button
+							size="sm"
+							onClick={() => authClient.signIn.social({ provider: "microsoft" })}
+						>
+							Sign In
 						</Button>
-
-						{data?.user ? (
-							<Button size="sm" onClick={() => authClient.signOut()}>
-								Sign Out
-							</Button>
-						) : (
-							<Button
-								size="sm"
-								onClick={() => authClient.signIn.social({ provider: "microsoft" })}
-							>
-								Sign In
-							</Button>
-						)}
-					</nav>
+					)}
 				</div>
 			</div>
 		</header>
