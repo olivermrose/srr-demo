@@ -12,6 +12,7 @@ import {
 	DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { ChevronRight } from "lucide-react";
+import ThemeToggle from "./ThemeToggle";
 
 export default function Header() {
 	const { data } = authClient.useSession();
@@ -28,35 +29,41 @@ export default function Header() {
 						<h1 className="text-xl font-semibold text-foreground">StudyRoom</h1>
 					</a>
 
-					{data?.user ? (
-						<DropdownMenu>
-							<DropdownMenuTrigger className="flex group items-center">
-								<span className="text-sm font-medium">{data.user.name}</span>
-								<ChevronRight className="ml-1 size-4 group-data-[state=open]:rotate-90 transition-[rotate]" />
-							</DropdownMenuTrigger>
+					<div className="flex items-center gap-x-2">
+						{data?.user ? (
+							<DropdownMenu>
+								<DropdownMenuTrigger className="flex group items-center">
+									<span className="text-sm font-medium">{data.user.name}</span>
+									<ChevronRight className="ml-1 size-4 group-data-[state=open]:rotate-90 transition-[rotate]" />
+								</DropdownMenuTrigger>
 
-							<DropdownMenuContent>
-								<DropdownMenuLabel>{data.user.email}</DropdownMenuLabel>
+								<DropdownMenuContent>
+									<DropdownMenuLabel>{data.user.email}</DropdownMenuLabel>
 
-								<DropdownMenuItem>
-									<Link href="/reservations">My Reservations</Link>
-								</DropdownMenuItem>
+									<DropdownMenuItem>
+										<Link href="/reservations">My Reservations</Link>
+									</DropdownMenuItem>
 
-								<DropdownMenuSeparator />
+									<DropdownMenuSeparator />
 
-								<DropdownMenuItem onClick={() => authClient.signOut()}>
-									Sign Out
-								</DropdownMenuItem>
-							</DropdownMenuContent>
-						</DropdownMenu>
-					) : (
-						<Button
-							size="sm"
-							onClick={() => authClient.signIn.social({ provider: "microsoft" })}
-						>
-							Sign In
-						</Button>
-					)}
+									<DropdownMenuItem onClick={() => authClient.signOut()}>
+										Sign Out
+									</DropdownMenuItem>
+								</DropdownMenuContent>
+							</DropdownMenu>
+						) : (
+							<Button
+								size="sm"
+								onClick={() => authClient.signIn.social({ provider: "microsoft" })}
+							>
+								Sign In
+							</Button>
+						)}
+
+						<div className="h-6 w-px bg-border"></div>
+
+						<ThemeToggle />
+					</div>
 				</div>
 			</div>
 		</header>
